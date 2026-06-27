@@ -1,0 +1,8 @@
+[book]
+title = "Zig Build System"
+authors = ["samsit-phew"]
+language = "en"
+src = "src"
+
+[output.html]
+git-repository-url = ""

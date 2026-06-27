@@ -1,0 +1,877 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Zig Build System</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-db6b06b2.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-7fe5c762.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Zig Build System</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="zig-build-system"><a class="header" href="#zig-build-system">Zig Build System</a></h1>
+<p>The Zig build system lives inside <code>build.zig</code> at the root of your project. Instead of a DSL like Make or CMake, it’s just Zig code — you write a <code>build</code> function, describe what you want built, and <code>zig build</code> runs it.</p>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    // everything hangs off b
+}
+</code></pre>
+<p>The mental model is simple:</p>
+<ul>
+<li><strong>Artifacts</strong> are things you produce (executables, libraries, modules)</li>
+<li><strong>Steps</strong> are things you run (install, test, run, custom commands)</li>
+<li><strong>dependOn</strong> is the glue that connects them</li>
+</ul>
+<p>Nothing runs unless it’s reachable from a step you invoke. Everything is lazy.</p>
+<hr>
+<p>This book covers Zig <code>0.16.0</code>. The build API changed significantly between 0.13 and 0.16, so older examples you find online will likely be wrong.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="how-it-works"><a class="header" href="#how-it-works">How it Works</a></h1>
+<p>When you run <code>zig build</code>, Zig compiles your <code>build.zig</code> and runs it. Your <code>build</code> function builds up a <strong>directed acyclic graph</strong> (DAG) of steps. Then Zig executes whatever steps you asked for, in the right order, in parallel where possible.</p>
+<pre><code>zig build          → runs the default step (usually "install")
+zig build run      → runs your "run" step
+zig build test     → runs your "test" step
+zig build --help   → lists all available steps
+</code></pre>
+<p>The <code>b</code> parameter is your handle to the build graph. Every artifact, module, and step you create is attached to it.</p>
+<pre><code class="language-zig">pub fn build(b: *std.Build) void {
+    // b.addExecutable    → create an exe artifact
+    // b.addLibrary       → create a lib artifact
+    // b.addModule        → create a zig module (no artifact)
+    // b.addTest          → create a test runner
+    // b.step             → create a named step (zig build &lt;name&gt;)
+    // b.dependency       → pull in a package from build.zig.zon
+    // b.installArtifact  → add artifact to the default install step
+}
+</code></pre>
+<p>Nothing is built unless a step that depends on it is actually invoked. If you create an executable but never call <code>b.installArtifact(exe)</code> or wire it to a step, it simply won’t build.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="artifacts"><a class="header" href="#artifacts">Artifacts</a></h1>
+<p>Artifacts are the things you build. There are three kinds.</p>
+<h2 id="executable"><a class="header" href="#executable">Executable</a></h2>
+<pre><code class="language-zig">const exe = b.addExecutable(.{
+    .name = "myapp",
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/main.zig"),
+        .target = target,
+        .optimize = optimize,
+    }),
+});
+</code></pre>
+<p>Produces <code>zig-out/bin/myapp</code>.</p>
+<h2 id="static-library"><a class="header" href="#static-library">Static Library</a></h2>
+<pre><code class="language-zig">const lib = b.addLibrary(.{
+    .name = "mylib",
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/root.zig"),
+        .target = target,
+        .optimize = optimize,
+    }),
+});
+</code></pre>
+<p>Produces <code>zig-out/lib/libmylib.a</code>. Useful when consuming from C. For pure Zig-to-Zig use a module instead.</p>
+<h2 id="module"><a class="header" href="#module">Module</a></h2>
+<pre><code class="language-zig">const mod = b.addModule("mymod", .{
+    .root_source_file = b.path("src/root.zig"),
+    .target = target,
+    .optimize = optimize,
+});
+</code></pre>
+<p>No file is produced. This is how Zig packages expose themselves to other Zig projects — just a module other build scripts can import.</p>
+<hr>
+<h2 id="installing-artifacts"><a class="header" href="#installing-artifacts">Installing Artifacts</a></h2>
+<p>Calling <code>b.installArtifact(exe)</code> copies the built artifact into <code>zig-out/</code> and adds it to the default step, so <code>zig build</code> alone produces it.</p>
+<pre><code class="language-zig">b.installArtifact(exe);   // now zig build produces zig-out/bin/myapp
+b.installArtifact(lib);   // now zig build produces zig-out/lib/libmylib.a
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="steps"><a class="header" href="#steps">Steps</a></h1>
+<p>Steps are the runnable nodes in your build graph. You create named steps with <code>b.step("name", "description")</code> and wire things to them with <code>dependOn</code>.</p>
+<h2 id="run-step"><a class="header" href="#run-step">Run step</a></h2>
+<pre><code class="language-zig">const run_cmd = b.addRunArtifact(exe);
+const run_step = b.step("run", "Run the app");
+run_step.dependOn(&amp;run_cmd.step);
+</code></pre>
+<p>Now <code>zig build run</code> builds and runs your exe.</p>
+<p>You can pass args through from the command line:</p>
+<pre><code class="language-zig">if (b.args) |args| {
+    run_cmd.addArgs(args);
+}
+</code></pre>
+<p>Then: <code>zig build run -- arg1 arg2</code></p>
+<h2 id="test-step"><a class="header" href="#test-step">Test step</a></h2>
+<pre><code class="language-zig">const tests = b.addTest(.{
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/main.zig"),
+        .target = target,
+        .optimize = optimize,
+    }),
+});
+
+const run_tests = b.addRunArtifact(tests);
+const test_step = b.step("test", "Run tests");
+test_step.dependOn(&amp;run_tests.step);
+</code></pre>
+<p>Now <code>zig build test</code> runs all <code>test</code> blocks in <code>src/main.zig</code>.</p>
+<h2 id="custom-steps"><a class="header" href="#custom-steps">Custom steps</a></h2>
+<p>You can chain any steps together:</p>
+<pre><code class="language-zig">const fmt_step = b.step("fmt", "Format source");
+const fmt_cmd = b.addSystemCommand(&amp;.{ "zig", "fmt", "src/" });
+fmt_step.dependOn(&amp;fmt_cmd.step);
+</code></pre>
+<p>Now <code>zig build fmt</code> runs <code>zig fmt src/</code>.</p>
+<h2 id="dependon"><a class="header" href="#dependon">dependOn</a></h2>
+<p><code>dependOn</code> is how you express ordering. If step B depends on step A, A runs first.</p>
+<pre><code class="language-zig">test_step.dependOn(&amp;run_tests.step);   // test_step requires run_tests to finish
+run_step.dependOn(&amp;run_cmd.step);      // run_step requires run_cmd to finish
+</code></pre>
+<p>You can depend on multiple things:</p>
+<pre><code class="language-zig">deploy_step.dependOn(&amp;build_step.step);
+deploy_step.dependOn(&amp;test_step.step);  // must pass tests before deploying
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="target-and-optimize"><a class="header" href="#target-and-optimize">Target and Optimize</a></h1>
+<p>Always add these two at the top of your <code>build</code> function. They let callers control the build from the command line.</p>
+<pre><code class="language-zig">const target = b.standardTargetOptions(.{});
+const optimize = b.standardOptimizeOption(.{});
+</code></pre>
+<p>Then pass them into every module you create:</p>
+<pre><code class="language-zig">b.createModule(.{
+    .root_source_file = b.path("src/main.zig"),
+    .target = target,
+    .optimize = optimize,
+});
+</code></pre>
+<h2 id="target"><a class="header" href="#target">Target</a></h2>
+<p>Controls what platform to build for.</p>
+<pre><code class="language-bash">zig build                              # native (your machine)
+zig build -Dtarget=aarch64-linux       # ARM Linux
+zig build -Dtarget=x86_64-windows     # Windows 64-bit
+zig build -Dtarget=wasm32-freestanding # WebAssembly
+</code></pre>
+<p>Zig cross-compiles out of the box with no extra toolchain needed.</p>
+<h2 id="optimize"><a class="header" href="#optimize">Optimize</a></h2>
+<p>Controls the optimization level.</p>
+<pre><code class="language-bash">zig build                        # Debug (default) — fast compile, slow run, safety checks on
+zig build -Doptimize=ReleaseSafe # optimized + safety checks
+zig build -Doptimize=ReleaseFast # max speed, no safety
+zig build -Doptimize=ReleaseSmall # min binary size
+</code></pre>
+<p>For development always use <code>Debug</code>. Ship with <code>ReleaseSafe</code> unless you have a specific reason for <code>ReleaseFast</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="modules"><a class="header" href="#modules">Modules</a></h1>
+<p>A module is just a Zig source file (and its transitive imports) that you can give a name and wire into other modules. It’s the primary way Zig code is shared between packages.</p>
+<h2 id="creating-a-module"><a class="header" href="#creating-a-module">Creating a module</a></h2>
+<pre><code class="language-zig">// in your library's build.zig
+const mod = b.addModule("princ", .{
+    .root_source_file = b.path("src/root.zig"),
+    .target = target,
+    .optimize = optimize,
+});
+</code></pre>
+<p>This makes <code>princ.module("princ")</code> available to anyone who depends on your package.</p>
+<h2 id="consuming-a-module"><a class="header" href="#consuming-a-module">Consuming a module</a></h2>
+<pre><code class="language-zig">// in the consumer's build.zig
+const princ = b.dependency("princ", .{
+    .target = target,
+    .optimize = optimize,
+});
+
+const exe = b.addExecutable(.{
+    .name = "myapp",
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/main.zig"),
+        .target = target,
+        .optimize = optimize,
+        .imports = &amp;.{
+            .{ .name = "princ", .module = princ.module("princ") },
+        },
+    }),
+});
+</code></pre>
+<p>Then in <code>src/main.zig</code>:</p>
+<pre><code class="language-zig">const princ = @import("princ");
+
+pub fn main() !void {
+    princ.princ(.hot_pink, "hello {s}\n", .{"world"});
+}
+</code></pre>
+<h2 id="module-vs-library"><a class="header" href="#module-vs-library">Module vs Library</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th>Module</th><th>Static Lib (<code>.a</code>)</th></tr>
+</thead>
+<tbody>
+<tr><td>Zig → Zig</td><td>✅ use this</td><td>❌ awkward</td></tr>
+<tr><td>Zig → C</td><td>❌</td><td>✅ use this</td></tr>
+<tr><td>C → Zig</td><td>❌</td><td>✅ use this</td></tr>
+</tbody>
+</table>
+</div>
+<p>If both sides are Zig, always use a module. The <code>.a</code> is only needed for C interop.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="buildzigzon"><a class="header" href="#buildzigzon">build.zig.zon</a></h1>
+<p><code>build.zig.zon</code> is the package manifest. It declares your package’s identity and its dependencies.</p>
+<pre><code class="language-zig">.{
+    .name = .myapp,           // package name (atom, not string)
+    .version = "0.1.0",
+    .minimum_zig_version = "0.16.0",
+    .fingerprint = 0xdeadbeef,  // generated by zig, don't touch
+    .paths = .{""},             // what to include when publishing ("" = everything)
+
+    .dependencies = .{
+        // local package
+        .princ = .{
+            .path = "../princ",
+        },
+
+        // remote package
+        .zap = .{
+            .url = "https://github.com/zigzap/zap/archive/abc123.tar.gz",
+            .hash = "1220...",
+        },
+    },
+}
+</code></pre>
+<h2 id="getting-the-hash-for-a-remote-package"><a class="header" href="#getting-the-hash-for-a-remote-package">Getting the hash for a remote package</a></h2>
+<pre><code class="language-bash"># add the url without the hash line, then run:
+zig build
+# zig will error and tell you the correct hash to paste in
+</code></pre>
+<p>Or use the fetch command:</p>
+<pre><code class="language-bash">zig fetch --save https://github.com/zigzap/zap/archive/abc123.tar.gz
+# automatically adds the url + hash to your build.zig.zon
+</code></pre>
+<h2 id="fields"><a class="header" href="#fields">Fields</a></h2>
+<ul>
+<li><code>.name</code> — atom (<code>.myapp</code>), not a string. Used as the package identifier.</li>
+<li><code>.version</code> — semver string.</li>
+<li><code>.minimum_zig_version</code> — zig will error if the user’s version is older.</li>
+<li><code>.fingerprint</code> — generated by <code>zig init</code>, don’t change it.</li>
+<li><code>.paths</code> — what files to include if someone depends on you. <code>""</code> means the whole repo.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="using-a-local-package"><a class="header" href="#using-a-local-package">Using a Local Package</a></h1>
+<p>A local package is one that lives on your filesystem, like a sibling directory. Great for splitting a project into multiple packages without publishing anything.</p>
+<h2 id="setup"><a class="header" href="#setup">Setup</a></h2>
+<p>Say you have:</p>
+<pre><code>projects/
+  princ/          ← your color library
+    src/root.zig
+    build.zig
+    build.zig.zon
+  server/         ← your app
+    src/main.zig
+    build.zig
+    build.zig.zon
+</code></pre>
+<p><strong>Step 1</strong> — expose a module in <code>princ/build.zig</code>:</p>
+<pre><code class="language-zig">pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    _ = b.addModule("princ", .{
+        .root_source_file = b.path("src/root.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+}
+</code></pre>
+<p><strong>Step 2</strong> — declare the dependency in <code>server/build.zig.zon</code>:</p>
+<pre><code class="language-zig">.{
+    .name = .server,
+    .version = "0.1.0",
+    .minimum_zig_version = "0.16.0",
+    .paths = .{""},
+    .dependencies = .{
+        .princ = .{
+            .path = "../princ",
+        },
+    },
+}
+</code></pre>
+<p><strong>Step 3</strong> — use it in <code>server/build.zig</code>:</p>
+<pre><code class="language-zig">const princ_dep = b.dependency("princ", .{
+    .target = target,
+    .optimize = optimize,
+});
+
+const exe = b.addExecutable(.{
+    .name = "server",
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/main.zig"),
+        .target = target,
+        .optimize = optimize,
+        .imports = &amp;.{
+            .{ .name = "princ", .module = princ_dep.module("princ") },
+        },
+    }),
+});
+</code></pre>
+<p><strong>Step 4</strong> — use it in code:</p>
+<pre><code class="language-zig">const princ = @import("princ");
+
+pub fn main(init: std.process.Init) !void {
+    princ.princ(.cyan, "Server started\n", .{});
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="using-a-remote-package"><a class="header" href="#using-a-remote-package">Using a Remote Package</a></h1>
+<p>Remote packages are fetched from a URL (usually a GitHub tarball). Zig caches them in <code>~/.cache/zig</code>.</p>
+<h2 id="adding-a-remote-dependency"><a class="header" href="#adding-a-remote-dependency">Adding a remote dependency</a></h2>
+<p>The easiest way is <code>zig fetch</code>:</p>
+<pre><code class="language-bash">zig fetch --save https://github.com/zigzap/zap/archive/refs/tags/v0.9.0.tar.gz
+</code></pre>
+<p>This automatically updates your <code>build.zig.zon</code> with the url and hash:</p>
+<pre><code class="language-zig">.dependencies = .{
+    .zap = .{
+        .url = "https://github.com/zigzap/zap/archive/refs/tags/v0.9.0.tar.gz",
+        .hash = "1220b3b4c7f2a...",
+    },
+},
+</code></pre>
+<h2 id="using-it-in-buildzig"><a class="header" href="#using-it-in-buildzig">Using it in build.zig</a></h2>
+<p>Same as a local package — <code>b.dependency</code> by the name you gave it in <code>.zon</code>:</p>
+<pre><code class="language-zig">const zap = b.dependency("zap", .{
+    .target = target,
+    .optimize = optimize,
+});
+
+exe.root_module.addImport("zap", zap.module("zap"));
+</code></pre>
+<h2 id="the-hash"><a class="header" href="#the-hash">The hash</a></h2>
+<p>The hash is a content hash of the downloaded archive. It ensures you always get exactly the same code, even if the URL changes. If you add a url without a hash, <code>zig build</code> will error and print the correct hash for you to paste in.</p>
+<pre><code>error: hash mismatch
+expected: 1220...
+found:    1220b3b4c7f2a...
+</code></pre>
+<p>Just paste the <code>found</code> value into your <code>.zon</code>.</p>
+<h2 id="pinning-versions"><a class="header" href="#pinning-versions">Pinning versions</a></h2>
+<p>Always pin to a specific tag or commit hash in the URL, not a branch like <code>main</code>:</p>
+<pre><code class="language-zig">// bad — mutable, changes over time
+.url = "https://github.com/user/pkg/archive/refs/heads/main.tar.gz",
+
+// good — immutable
+.url = "https://github.com/user/pkg/archive/refs/tags/v1.2.3.tar.gz",
+.url = "https://github.com/user/pkg/archive/abc123def456.tar.gz",
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="executable-with-a-dependency"><a class="header" href="#executable-with-a-dependency">Executable with a Dependency</a></h1>
+<p>A full working <code>build.zig</code> for an executable that depends on a local package.</p>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    // pull in the princ color library
+    const princ = b.dependency("princ", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+    // build the exe
+    const exe = b.addExecutable(.{
+        .name = "server",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/main.zig"),
+            .target = target,
+            .optimize = optimize,
+            .imports = &amp;.{
+                .{ .name = "princ", .module = princ.module("princ") },
+            },
+        }),
+    });
+    b.installArtifact(exe);
+
+    // zig build run
+    const run_cmd = b.addRunArtifact(exe);
+    if (b.args) |args| run_cmd.addArgs(args);
+    const run_step = b.step("run", "Run the server");
+    run_step.dependOn(&amp;run_cmd.step);
+
+    // zig build test
+    const tests = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/main.zig"),
+            .target = target,
+            .optimize = optimize,
+            .imports = &amp;.{
+                .{ .name = "princ", .module = princ.module("princ") },
+            },
+        }),
+    });
+    const run_tests = b.addRunArtifact(tests);
+    const test_step = b.step("test", "Run tests");
+    test_step.dependOn(&amp;run_tests.step);
+}
+</code></pre>
+<p>The corresponding <code>build.zig.zon</code>:</p>
+<pre><code class="language-zig">.{
+    .name = .server,
+    .version = "0.1.0",
+    .minimum_zig_version = "0.16.0",
+    .paths = .{""},
+    .dependencies = .{
+        .princ = .{
+            .path = "../princ",
+        },
+    },
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="library-package"><a class="header" href="#library-package">Library Package</a></h1>
+<p>How to structure a package meant to be consumed by other Zig projects.</p>
+<h2 id="buildzig"><a class="header" href="#buildzig">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    // expose as a module — this is how other projects import you
+    _ = b.addModule("princ", .{
+        .root_source_file = b.path("src/root.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    // also build a static lib (only needed for C consumers)
+    const lib = b.addLibrary(.{
+        .name = "princ",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/root.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+    b.installArtifact(lib);
+
+    // tests
+    const tests = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/root.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+    const run_tests = b.addRunArtifact(tests);
+    const test_step = b.step("test", "Run tests");
+    test_step.dependOn(&amp;run_tests.step);
+}
+</code></pre>
+<h2 id="buildzigzon-1"><a class="header" href="#buildzigzon-1">build.zig.zon</a></h2>
+<pre><code class="language-zig">.{
+    .name = .princ,
+    .version = "0.1.0",
+    .minimum_zig_version = "0.16.0",
+    .fingerprint = 0x9605f9a135a6e962,
+    .paths = .{""},   // include everything
+}
+</code></pre>
+<h2 id="srcrootzig"><a class="header" href="#srcrootzig">src/root.zig</a></h2>
+<p>This is the entry point of your library. Everything <code>pub</code> here is part of your API.</p>
+<pre><code class="language-zig">const std = @import("std");
+
+pub const Color = enum { red, green, blue };
+
+pub fn princ(color: Color, comptime fmt: []const u8, args: anytype) void {
+    std.debug.print("{s}" ++ fmt ++ "\x1b[0m", .{colorCode(color)} ++ args);
+}
+
+fn colorCode(color: Color) []const u8 {
+    return switch (color) {
+        .red   =&gt; "\x1b[31m",
+        .green =&gt; "\x1b[32m",
+        .blue  =&gt; "\x1b[34m",
+    };
+}
+
+test "colorCode is non-empty" {
+    inline for (@typeInfo(Color).@"enum".fields) |field| {
+        const c: Color = @enumFromInt(field.value);
+        try std.testing.expect(colorCode(c).len &gt; 0);
+    }
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="multiple-executables"><a class="header" href="#multiple-executables">Multiple Executables</a></h1>
+<p>Building a server and client from the same <code>build.zig</code>, sharing a common module.</p>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const princ = b.dependency("princ", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+    // shared imports list
+    const imports: []const std.Build.Module.Import = &amp;.{
+        .{ .name = "princ", .module = princ.module("princ") },
+    };
+
+    // server exe
+    const server = b.addExecutable(.{
+        .name = "server",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/server.zig"),
+            .target = target,
+            .optimize = optimize,
+            .imports = imports,
+        }),
+    });
+    b.installArtifact(server);
+
+    // client exe
+    const client = b.addExecutable(.{
+        .name = "client",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/client.zig"),
+            .target = target,
+            .optimize = optimize,
+            .imports = imports,
+        }),
+    });
+    b.installArtifact(client);
+
+    // zig build server
+    const run_server = b.addRunArtifact(server);
+    const server_step = b.step("server", "Run the server");
+    server_step.dependOn(&amp;run_server.step);
+
+    // zig build client
+    const run_client = b.addRunArtifact(client);
+    const client_step = b.step("client", "Run the client");
+    client_step.dependOn(&amp;run_client.step);
+
+    // zig build test — runs tests from both files
+    const test_step = b.step("test", "Run all tests");
+
+    for (&amp;[_][]const u8{ "src/server.zig", "src/client.zig" }) |src| {
+        const tests = b.addTest(.{
+            .root_module = b.createModule(.{
+                .root_source_file = b.path(src),
+                .target = target,
+                .optimize = optimize,
+                .imports = imports,
+            }),
+        });
+        test_step.dependOn(&amp;b.addRunArtifact(tests).step);
+    }
+}
+</code></pre>
+<p>Now:</p>
+<pre><code class="language-bash">zig build server   # run server
+zig build client   # run client
+zig build          # build both into zig-out/bin/
+zig build test     # test both
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="cli-cheat-sheet"><a class="header" href="#cli-cheat-sheet">CLI Cheat Sheet</a></h1>
+<h2 id="common-commands"><a class="header" href="#common-commands">Common commands</a></h2>
+<pre><code class="language-bash">zig build                          # default step (install artifacts to zig-out/)
+zig build run                      # run your "run" step
+zig build test                     # run your "test" step
+zig build --help                   # list all available steps
+zig build run -- arg1 arg2         # pass args to your exe
+</code></pre>
+<h2 id="optimize-flags"><a class="header" href="#optimize-flags">Optimize flags</a></h2>
+<pre><code class="language-bash">zig build                          # Debug (default)
+zig build -Doptimize=ReleaseSafe   # optimized + safety checks on
+zig build -Doptimize=ReleaseFast   # max speed
+zig build -Doptimize=ReleaseSmall  # smallest binary
+</code></pre>
+<h2 id="cross-compilation"><a class="header" href="#cross-compilation">Cross compilation</a></h2>
+<pre><code class="language-bash">zig build -Dtarget=aarch64-linux-gnu
+zig build -Dtarget=x86_64-windows-gnu
+zig build -Dtarget=wasm32-freestanding
+zig build -Dtarget=x86_64-macos
+</code></pre>
+<h2 id="package-management"><a class="header" href="#package-management">Package management</a></h2>
+<pre><code class="language-bash">zig init                           # scaffold a new project
+zig fetch --save &lt;url&gt;             # add a remote dependency
+zig build --fetch                  # fetch all dependencies without building
+</code></pre>
+<h2 id="debugging-the-build"><a class="header" href="#debugging-the-build">Debugging the build</a></h2>
+<pre><code class="language-bash">zig build --verbose                # show all commands run
+zig build --summary all            # show what was built/cached
+zig build 2&gt;&amp;1 | head -50         # pipe stderr to see full errors
+</code></pre>
+<h2 id="output"><a class="header" href="#output">Output</a></h2>
+<pre><code>zig-out/
+  bin/    ← executables
+  lib/    ← static/shared libraries
+  include/ ← headers (if you install any)
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="common-errors"><a class="header" href="#common-errors">Common Errors</a></h1>
+<h2 id="no-field-named-root_source_file-in-struct-buildtestoptions"><a class="header" href="#no-field-named-root_source_file-in-struct-buildtestoptions">no field named ‘root_source_file’ in struct ‘Build.TestOptions’</a></h2>
+<p>You’re using the old 0.13/0.14 API. In 0.16, <code>addTest</code> takes <code>.root_module</code>:</p>
+<pre><code class="language-zig">// old (broken in 0.16)
+const tests = b.addTest(.{
+    .root_source_file = b.path("src/main.zig"),
+});
+
+// correct
+const tests = b.addTest(.{
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/main.zig"),
+        .target = target,
+        .optimize = optimize,
+    }),
+});
+</code></pre>
+<hr>
+<h2 id="error-hash-mismatch"><a class="header" href="#error-hash-mismatch">error: hash mismatch</a></h2>
+<p>You added a remote dependency without a hash. Run <code>zig build</code> — it will error and print the correct hash. Paste the <code>found:</code> value into your <code>.zon</code>.</p>
+<hr>
+<h2 id="dependency-x-not-found"><a class="header" href="#dependency-x-not-found">dependency ‘X’ not found</a></h2>
+<p>The name in <code>b.dependency("X", ...)</code> must exactly match the key in <code>.dependencies</code> in your <code>build.zig.zon</code>.</p>
+<pre><code class="language-zig">// build.zig.zon
+.dependencies = .{
+    .princ = .{ .path = "../princ" },  // key is "princ"
+}
+
+// build.zig
+const dep = b.dependency("princ", .{});  // must match
+</code></pre>
+<hr>
+<h2 id="module-x-not-found"><a class="header" href="#module-x-not-found">module ‘X’ not found</a></h2>
+<p>The name in <code>dep.module("X")</code> must match the name you passed to <code>b.addModule("X", ...)</code> in the dependency’s <code>build.zig</code>.</p>
+<pre><code class="language-zig">// princ/build.zig
+_ = b.addModule("princ", .{ ... });  // must match
+
+// server/build.zig
+princ_dep.module("princ")  // this name
+</code></pre>
+<hr>
+<h2 id="unused-variable--unused-import"><a class="header" href="#unused-variable--unused-import">unused variable / unused import</a></h2>
+<p>Zig treats unused variables as errors. If you pulled in a dependency but aren’t using it yet:</p>
+<pre><code class="language-zig">const dep = b.dependency("princ", .{ ... });
+_ = dep;  // suppress error temporarily
+</code></pre>
+<hr>
+<h2 id="zig-out-not-updating"><a class="header" href="#zig-out-not-updating">zig-out not updating</a></h2>
+<p>If your artifact isn’t in <code>zig-out/</code>, make sure you called <code>b.installArtifact(exe)</code>. Without it, the default step doesn’t know about your exe.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+
+    </div>
+    </body>
+</html>
